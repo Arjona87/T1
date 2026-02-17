@@ -16,6 +16,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 let markers = [];
+let municipiosLayer = null;
 
 // ID de la hoja de cálculo y rango
 const SPREADSHEET_ID = '1x8jI4RYM6nvhydMfxBn68x7shxyEuf_KWNC0iDq8mzw';
@@ -78,7 +79,7 @@ function parseGoogleSheetData(data) {
                 nombre: cells[1]?.v || '',
                 latitud: parseFloat(cells[2]?.v || 0),
                 longitud: parseFloat(cells[3]?.v || 0),
-                consejos: cells[4]?.v ? String(cells[4].v).substring(0, 150) : '',
+                consejos: cells[4]?.v ? String(cells[4].v) : '',
                 distancia_tiempo: cells[5]?.v || '',
                 ruta: cells[6]?.v || '',
                 link: cells[7]?.v || ''
@@ -104,8 +105,9 @@ function loadLocalData() {
             latitud: 20.305337,
             longitud: -103.262198,
             distancia_tiempo: '1.5 hrs / 60km',
-            ruta: 'Ruta directa',
-            link: 'https://www.waze.com/'
+            consejos: 'Disfruta el centro a pie. Mantén tus pertenencias en bolsillos frontales.',
+            ruta: 'https://www.waze.com/live-map/directions/ajijic-jal.-mx',
+            link: 'https://pueblosmagicos.mexicodesconocido.com.mx/jalisco/ajijic/'
         },
         {
             id: '2',
@@ -113,8 +115,9 @@ function loadLocalData() {
             latitud: 20.658117,
             longitud: -103.269627,
             distancia_tiempo: '2.0 hrs / 90km',
-            ruta: 'Ruta directa',
-            link: 'https://www.waze.com/'
+            consejos: 'Respeta el entorno local. Mantén contacto con familiares.',
+            ruta: 'https://www.waze.com/live-map/directions/cocula-jal.-mx',
+            link: 'https://pueblosmagicos.mexicodesconocido.com.mx/jalisco/cocula/'
         },
         {
             id: '3',
@@ -122,8 +125,9 @@ function loadLocalData() {
             latitud: 21.607402,
             longitud: -101.925953,
             distancia_tiempo: '2.2hrs / 190km',
-            ruta: 'Ruta directa',
-            link: 'https://www.waze.com/'
+            consejos: 'Explora durante horas de luz. Usa transporte oficial.',
+            ruta: 'https://www.waze.com/live-map/directions/lagos-de-moreno-jal.-mx',
+            link: 'https://pueblosmagicos.mexicodesconocido.com.mx/jalisco/lagos-de-moreno/'
         },
         {
             id: '4',
@@ -131,8 +135,9 @@ function loadLocalData() {
             latitud: 20.289743,
             longitud: -104.790351,
             distancia_tiempo: '3.2 hrs / 220 km',
-            ruta: 'Ruta directa',
-            link: 'https://www.waze.com/'
+            consejos: 'Senderismo con guías certificados. Evita zonas poco iluminadas.',
+            ruta: 'https://www.waze.com/live-map/directions/mascota-jal.-mx',
+            link: 'https://pueblosmagicos.mexicodesconocido.com.mx/jalisco/mascota/'
         },
         {
             id: '5',
@@ -140,8 +145,9 @@ function loadLocalData() {
             latitud: 19.179625,
             longitud: -103.019921,
             distancia_tiempo: '2.4hrs / 170km',
-            ruta: 'Ruta directa',
-            link: 'https://www.waze.com/'
+            consejos: 'Clima frío. Lleva abrigo. Respeta la naturaleza local.',
+            ruta: 'https://www.waze.com/live-map/directions/mazamitla-jal.-mx',
+            link: 'https://pueblosmagicos.mexicodesconocido.com.mx/jalisco/mazamitla/'
         },
         {
             id: '6',
@@ -149,8 +155,9 @@ function loadLocalData() {
             latitud: 20.616408,
             longitud: -104.852881,
             distancia_tiempo: '4.4hrs / 250km',
-            ruta: 'Ruta directa',
-            link: 'https://www.waze.com/'
+            consejos: 'Caminos sinuosos. Maneja con precaución. Lleva agua.',
+            ruta: 'https://www.waze.com/live-map/directions/san-sebastian-del-oeste-jal.-mx',
+            link: 'https://pueblosmagicos.mexicodesconocido.com.mx/jalisco/san-sebastian-del-oeste/'
         },
         {
             id: '7',
@@ -158,8 +165,9 @@ function loadLocalData() {
             latitud: 19.796661,
             longitud: -103.598472,
             distancia_tiempo: '2.1 hrs / 150km',
-            ruta: 'Ruta directa',
-            link: 'https://www.waze.com/'
+            consejos: 'Pueblo tranquilo. Respeta las tradiciones locales.',
+            ruta: 'https://www.waze.com/live-map/directions/sayula-jal.-mx',
+            link: 'https://pueblosmagicos.mexicodesconocido.com.mx/jalisco/sayula/'
         },
         {
             id: '8',
@@ -167,8 +175,9 @@ function loadLocalData() {
             latitud: 20.783058,
             longitud: -104.819555,
             distancia_tiempo: '3.2 hrs / 200km',
-            ruta: 'Ruta directa',
-            link: 'https://www.waze.com/'
+            consejos: 'Sitio religioso importante. Respeta los espacios sagrados.',
+            ruta: 'https://www.waze.com/live-map/directions/talpa-de-allende-jal.-mx',
+            link: 'https://pueblosmagicos.mexicodesconocido.com.mx/jalisco/talpa-de-allende/'
         },
         {
             id: '9',
@@ -176,8 +185,9 @@ function loadLocalData() {
             latitud: 19.458624,
             longitud: -103.759173,
             distancia_tiempo: '2.5 hrs / 170km',
-            ruta: 'Ruta directa',
-            link: 'https://www.waze.com/'
+            consejos: 'Clima frío en las noches. Lleva abrigo. Disfruta la gastronomía local.',
+            ruta: 'https://www.waze.com/live-map/directions/tapalpa-jal.-mx',
+            link: 'https://pueblosmagicos.mexicodesconocido.com.mx/jalisco/tapalpa/'
         },
         {
             id: '10',
@@ -185,8 +195,9 @@ function loadLocalData() {
             latitud: 21.188262,
             longitud: -102.706869,
             distancia_tiempo: '2.0 hrs / 135km',
-            ruta: 'Ruta directa',
-            link: 'https://www.waze.com/'
+            consejos: 'Pueblo pequeño y tranquilo. Ideal para descansar.',
+            ruta: 'https://www.waze.com/live-map/directions/temacapulin-jal.-mx',
+            link: 'https://pueblosmagicos.mexicodesconocido.com.mx/jalisco/temacapulin/'
         },
         {
             id: '11',
@@ -194,8 +205,9 @@ function loadLocalData() {
             latitud: 20.816072,
             longitud: -103.832902,
             distancia_tiempo: '1.1hrs / 66km',
-            ruta: 'Ruta directa',
-            link: 'https://www.waze.com/'
+            consejos: 'Catas de tequila. Conoce tu límite. Manténte hidratado.',
+            ruta: 'https://www.waze.com/live-map/directions/tequila-jal.-mx',
+            link: 'https://pueblosmagicos.mexicodesconocido.com.mx/jalisco/tequila-jalisco/'
         },
         {
             id: '12',
@@ -203,8 +215,9 @@ function loadLocalData() {
             latitud: 20.396534,
             longitud: -103.311907,
             distancia_tiempo: '30 min / 14 km',
-            ruta: 'Ruta directa',
-            link: 'https://www.waze.com/'
+            consejos: 'Centro muy caminable. Mantén tus pertenencias seguras.',
+            ruta: 'https://www.waze.com/live-map/directions/tlaquepaque-jal.-mx',
+            link: 'https://pueblosmagicos.mexicodesconocido.com.mx/jalisco/tlaquepaque-jalisco/'
         }
     ];
     
@@ -216,6 +229,32 @@ function loadLocalData() {
         const group = new L.featureGroup(markers);
         map.fitBounds(group.getBounds().pad(0.1));
     }
+}
+
+/**
+ * Cargar el GeoJSON de municipios
+ */
+function loadMunicipios() {
+    fetch('jalisco_municipios.geojson')
+        .then(response => response.json())
+        .then(data => {
+            municipiosLayer = L.geoJSON(data, {
+                style: {
+                    fillColor: '#E8E8E8',
+                    weight: 2,
+                    opacity: 1,
+                    color: '#888888',
+                    fillOpacity: 0.5
+                },
+                onEachFeature: function(feature, layer) {
+                    // No agregar pop-ups a los municipios
+                }
+            }).addTo(map);
+            
+            // Enviar municipios al fondo
+            municipiosLayer.bringToBack();
+        })
+        .catch(error => console.error('Error cargando GeoJSON:', error));
 }
 
 /**
@@ -238,7 +277,7 @@ function addMarkerToMap(pueblo) {
     const popupHTML = createPopupContent(pueblo);
     
     marker.bindPopup(popupHTML, {
-        maxWidth: 400,
+        maxWidth: 450,
         className: 'custom-popup'
     });
     
@@ -256,30 +295,29 @@ function createPopupContent(pueblo) {
     const html = `
         <div class="popup-content">
             <div class="popup-title">${pueblo.nombre}</div>
+            
             <div class="popup-info">
                 <span class="popup-label">Desde Guadalajara:</span>
                 <span class="popup-value">${pueblo.distancia_tiempo}</span>
             </div>
-            ${pueblo.ruta ? `
+            
             <div class="popup-info">
-                <span class="popup-label">Ruta:</span>
-                <span class="popup-value">${pueblo.ruta}</span>
+                <span class="popup-label">🛡️ Consejos de Seguridad:</span>
+                <span class="popup-value">${pueblo.consejos}</span>
             </div>
-            ` : ''}
-            ${pueblo.link ? `
+            
             <div class="popup-link">
-                <a href="${pueblo.link}" target="_blank" rel="noopener noreferrer">
-                    🔗 Ver más información
-                </a>
+                ${pueblo.ruta ? `<a href="${pueblo.ruta}" target="_blank" rel="noopener noreferrer">🗺️ Ruta desde Guadalajara</a><br>` : ''}
+                ${pueblo.link ? `<a href="${pueblo.link}" target="_blank" rel="noopener noreferrer">ℹ️ Información Turística</a>` : ''}
             </div>
-            ` : ''}
         </div>
     `;
     
     return html;
 }
 
-// Cargar datos al iniciar
+// Cargar municipios y datos al iniciar
 document.addEventListener('DOMContentLoaded', function() {
+    loadMunicipios();
     loadDataFromSheet();
 });

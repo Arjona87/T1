@@ -111,23 +111,24 @@ header p {
 }
 
 .popup-info {
-    margin: 8px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    margin: 10px 0;
+    display: block;
+    word-wrap: break-word;
 }
 
 .popup-label {
     font-weight: 600;
     color: #555;
-    min-width: 120px;
+    display: block;
+    margin-bottom: 3px;
 }
 
 .popup-value {
     color: #333;
-    text-align: right;
-    flex: 1;
-    padding-left: 10px;
+    display: block;
+    padding-left: 0;
+    line-height: 1.5;
+    margin-bottom: 8px;
 }
 
 .popup-link {
@@ -142,6 +143,8 @@ header p {
     font-weight: 600;
     display: inline-block;
     transition: color 0.3s ease;
+    margin-right: 15px;
+    margin-bottom: 8px;
 }
 
 .popup-link a:hover {
